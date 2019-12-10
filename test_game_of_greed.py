@@ -15,16 +15,16 @@ from game_of_greed import Game
 #####################
 
 def test_start_game(game):
-  prints = ["Welcome to the Game of Greed", 'Come back later, Current WIP']
-  prompts = ["Do you Wanna Play? (Y/N)"]
+  prints = ["Welcome to Game of Greed", 'Great! Check back tomorrow :D']
+  prompts = ["Wanna play?"]
   response = ['Yes']
 
   run_io(game, prints, prompts, response)
 
 
 def test_dont_start(game):
-  prints = ["Welcome to the Game of Greed", 'Bye Then...']
-  prompts = ["Do you Wanna Play? (Y/N)"]
+  prints = ["Welcome to Game of Greed", 'OK. Maybe another time']
+  prompts = ["Wanna play?"]
   response = ['No']
 
   run_io(game, prints, prompts, response)
@@ -34,26 +34,26 @@ def run_io(game, prints, prompts, response):
 
   def printing(message):
     assert message == prints.pop(0)
-  
+
   def inputs(message):
     assert message == prompts.pop(0)
     return response.pop(0)
 
   game.testing_console(printing, inputs)
-  
+
 
 #################
 ## Test Scores ##
 #################
 
 def test_zilch(game):
-  assert 0 == game.calculate_score([])
-  assert 0 == game.calculate_score([2,3])
-  assert 0 == game.calculate_score([2,3,4,6])
+  assert 0 == game.calculate_score(())
+  assert 0 == game.calculate_score((2,3))
+  assert 0 == game.calculate_score((2,3,4,6))
   assert 0 == game.calculate_score([2,2,3,3,4,6])
 
 def test_ones(game):
-  assert 100 == game.calculate_score([1])
+  assert 100 == game.calculate_score((1,))
   assert 200 == game.calculate_score([1,1])
   assert 200 == game.calculate_score([1,2,1,2,3,6])
   assert 1000 == game.calculate_score([1,1,1,2,4,6])
@@ -62,13 +62,13 @@ def test_ones(game):
   assert 4000 == game.calculate_score([1,1,1,1,1,1])
 
 def test_twos(game):
-  assert 0 == game.calculate_score([2])
+  assert 0 == game.calculate_score((2,))
   assert 0 == game.calculate_score([2,2])
   assert 200 == game.calculate_score([2,2,2])
   assert 300 == game.calculate_score([2,1,2,2,4,6])
   assert 400 == game.calculate_score([2,2,2,2,4,6])
   assert 600 == game.calculate_score([2,2,2,2,2])
-  assert 800 == game.calculate_score([2,2,2,2,2,2])
+  assert 800 == game.calculate_score((2,2,2,2,2,2))
 
 
 def test_threes(game):
