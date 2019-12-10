@@ -1,23 +1,31 @@
 from collections import Counter
 
+
+# Needed to subvert the problems with reassigning the print method.
+def hack_print(msg):
+    print(msg)
+
+def hack_input(msg):
+  return input(msg)
+
 class Game:
   """The class that controlls most aspects of the game from the basics of the game loop to the score counting"""
 
-  def __init__(self):
+  def __init__(self, _print=hack_print , _input=hack_input):
     """Currently just sets the print and input to the default methods"""
-    self._print=self.hack_print
-    self._input=self.hack_input
+    self._print=_print
+    self._input=_input
 
 
   def play(self):
     """Controls the main game loop. That includes starting and stopping the game based on user input"""
     valid_inputs = {'y','yes','ok','okay'}
-    self._print("Welcome to the Game of Greed")
-    player_input = self._input("Do you Wanna Play? (Y/N)")
+    self._print('Welcome to Game of Greed')
+    player_input = self._input("Wanna play?")
     if player_input.lower() in valid_inputs:
-      self._print('Come back later, Current WIP')
+      self._print('Great! Check back tomorrow :D')
     else:
-      self._print('Bye Then...')
+      self._print('OK. Maybe another time')
 
 
   def calculate_score(self, dice):
@@ -39,18 +47,19 @@ class Game:
     total = 0
 
     for key in count:
-
+      sum = 0
       if count[key] > 2:
-        total += ((count[key]-2)*100)*key
+        sum += ((count[key]-2)*100)*key
       elif key == 1:
-        total += count[key] * 10
+        sum += count[key] * 10
       elif key == 5:
-        total += count[key] * 50
+        sum += count[key] * 50
 
       if key == 1:
         # The key of one will always be first in the range(1-6) of dice is kept so thos won't effect the overall score
-        total *= 10
+        sum *= 10
 
+      total += sum
     return total
 
 
@@ -61,17 +70,6 @@ class Game:
     if input_func:
       self._input = input_func
     self.play()
-
-
-  @staticmethod
-  def hack_print(msg):
-      print(msg)
-
-
-  @staticmethod
-  def hack_input(msg):
-    return input(msg)
-
 
 
 if __name__ == "__main__":
