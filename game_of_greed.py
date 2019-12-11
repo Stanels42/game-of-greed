@@ -1,5 +1,6 @@
 from collections import Counter
-
+from random import randint
+import re
 
 # Needed to subvert the problems with reassigning the print method.
 def hack_print(msg):
@@ -13,6 +14,10 @@ class Game:
 
   def __init__(self, _print=hack_print , _input=hack_input):
     """Currently just sets the print and input to the default methods"""
+    self._player1_score = 0
+    self._player2_score = 0
+
+
     self._print=_print
     self._input=_input
 
@@ -26,6 +31,64 @@ class Game:
       self._print('Great! Check back tomorrow :D')
     else:
       self._print('OK. Maybe another time')
+
+
+  def turn(self):
+    bank = 0
+    saved_dice = []
+
+    end = False
+    while not end:
+
+      roll = self.roll_dice(6 - len(saved_dice))
+      print(roll)
+      roll_score = self.calculate_score(roll)
+
+      # Break from the loop and end the turn
+      if roll_score == 0:
+        print('Roll 0 end Turn')
+        bank = 0
+        end = True
+        continue
+
+        ########################################
+        ## Beyond This Point There be Dragons ##
+        ##            Turn Back Now           ##
+        ########################################
+
+      # Let the player decide their actions
+      exit = False
+      while not exit:
+        user_input = input("What would you like to do? ")
+        if re.match(r"[Hh]elp", user_input):
+          print('\nBank Points: `bank`')
+          print('Save Dice:   `save #,count`')
+          print('Roll:        `roll` *Can only be done after a save*\n')
+        elif re.match(r"[Bb]ank", user_input):
+          bank += roll_score
+          exit = True
+          end = True
+        elif re.match(r'[Ss]ave', user_input):
+          if (re.match(r'save\s[1-6],[1-6]', user_input)):
+            num = re.findall(r"[1-6]", user_input)
+            count = Counter(roll)
+            position = int(num[1])
+            value = int(num[0])
+            if count[position] >= value:
+
+              print(count[position])
+              count[position] -= value
+              print(count[position])
+
+              ## Need to make sure the removed values score points ##
+          else:
+            print('Invalid Save Format: `save [count],[num]')
+        elif re.match(r"[Rr]oll", user_input):
+          exit = True
+        else:
+          print('Invalid Input\nType \'help\' for help')
+
+    return bank
 
 
   def calculate_score(self, dice):
@@ -63,6 +126,12 @@ class Game:
     return total
 
 
+  def roll_dice(self, times = 1):
+    rolls = []
+    for x in range(0, times):
+      rolls.append(randint(1,6))
+    return rolls
+
   def testing_console(self, print_func=None, input_func=None):
     """***TESTING ONLY*** It is designed to take in override functions for both the print and input functions. Then run the play method"""
     if print_func:
@@ -76,4 +145,4 @@ if __name__ == "__main__":
 
     game = Game()
 
-    game.play()
+    print(game.turn())
