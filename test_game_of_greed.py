@@ -128,6 +128,16 @@ def test_leftover_fives(game):
   assert 100 == game.calculate_score([5,5,3,2,2,6])
   assert 200 == game.calculate_score([5,2,3,5,1,6])
 
+###############
+## Roll Dice ##
+###############
+
+def test_dice_roll(game):
+  assert 7 not in range(1,7)
+  assert 0 not in range(1,7)
+  assert game.roll_dice()[0] in range(1,7)
+  assert game.roll_dice()[0] in range(1,7)
+
 #######################
 ## Make Game Fixture ##
 #######################
