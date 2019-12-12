@@ -11,6 +11,8 @@ def hack_input(msg):
 
 class Game:
   """The class that controlls most aspects of the game from the basics of the game loop to the score counting"""
+  _valid_yes = {'y','yes','ok','okay','sure','affirmative'}
+  _valid_no = {'n','no','nope','none','naw'}
 
   def __init__(self, _print=hack_print , _input=hack_input):
     """Currently just sets the print and input to the default methods"""
@@ -24,69 +26,72 @@ class Game:
 
   def play(self):
     """Controls the main game loop. That includes starting and stopping the game based on user input"""
-    valid_inputs = {'y','yes','ok','okay'}
     self._print('Welcome to Game of Greed')
     player_input = self._input("Wanna play?")
-    if player_input.lower() in valid_inputs:
+    if player_input.lower() in self._valid_yes:
       self._print('Great! Check back tomorrow :D')
+      turns = 0
+      while turns < 10:
+        self._print('Player 1 it\'s your turn!')
+        self._player1_score = self.turn()
+        turns += 1
+      self._print('Your Final Score is:' + str(self._player1_score))
     else:
       self._print('OK. Maybe another time')
 
 
   def turn(self):
     bank = 0
-    saved_dice = []
+    saved_dice = 0
 
-    end = False
-    while not end:
+    end_turn = False
+    while not end_turn:
 
-      roll = self.roll_dice(6 - len(saved_dice))
-      print(roll)
+      roll = self.roll_dice(6 - saved_dice % 6)
+
       roll_score = self.calculate_score(roll)
 
       # Break from the loop and end the turn
       if roll_score == 0:
-        print('Roll 0 end Turn')
+        self._print('Roll 0 end Turn')
         bank = 0
-        end = True
+        end_turn = True
         continue
 
         ########################################
         ## Beyond This Point There be Dragons ##
         ##            Turn Back Now           ##
         ########################################
+        # I'm keeping this in. Period.
 
-      # Let the player decide their actions
-      exit = False
-      while not exit:
-        user_input = input("What would you like to do? ")
-        if re.match(r"[Hh]elp", user_input):
-          print('\nBank Points: `bank`')
-          print('Save Dice:   `save #,count`')
-          print('Roll:        `roll` *Can only be done after a save*\n')
-        elif re.match(r"[Bb]ank", user_input):
-          bank += roll_score
-          exit = True
-          end = True
-        elif re.match(r'[Ss]ave', user_input):
-          if (re.match(r'save\s[1-6],[1-6]', user_input)):
-            num = re.findall(r"[1-6]", user_input)
-            count = Counter(roll)
-            position = int(num[1])
-            value = int(num[0])
-            if count[position] >= value:
-
-              print(count[position])
-              count[position] -= value
-              print(count[position])
-
-              ## Need to make sure the removed values score points ##
-          else:
-            print('Invalid Save Format: `save [count],[num]')
-        elif re.match(r"[Rr]oll", user_input):
-          exit = True
+      valid_save=False
+      while not valid_save:
+        self._print('Your Roll Was: ' + str(roll))
+        self._print('Your Current Bank is: ' + str(bank))
+        response = input('Enter dice to keep: ')
+        if re.match(r"[1-6]{1,6}", response):
+          saved = re.findall(r"[1-6]", response)
+          for i in range(len(saved)):
+            saved[i] = int(saved[i])
+          count = Counter(saved)
+          count_list = list(count.elements())
+          bad_entry = False
+          for key in count.keys():
+            if not key == 1 and not key == 5 and not count[key] > 2:
+              bad_entry = True
+          if bad_entry:
+            self._print("Bad Save Values")
+            continue
+          saved_dice += len(saved)
+          bank += self.calculate_score(count_list)
+          valid_save = True
         else:
-          print('Invalid Input\nType \'help\' for help')
+          self._print("Bad Save Values")
+
+
+      response = self._input('Roll again? ')
+      if response.lower() in self._valid_no:
+        end_turn = True
 
     return bank
 
@@ -113,10 +118,8 @@ class Game:
       sum = 0
       if count[key] > 2:
         sum += ((count[key]-2)*100)*key
-      elif key == 1:
-        sum += count[key] * 10
-      elif key == 5:
-        sum += count[key] * 50
+      elif key == 1 or key == 5:
+        sum += count[key] * 10 * key
 
       if key == 1:
         # The key of one will always be first in the range(1-6) of dice is kept so thos won't effect the overall score
@@ -127,10 +130,7 @@ class Game:
 
 
   def roll_dice(self, times = 1):
-    rolls = []
-    for x in range(0, times):
-      rolls.append(randint(1,6))
-    return rolls
+    return [randint(1,6) for _ in range(times)]
 
   def testing_console(self, print_func=None, input_func=None):
     """***TESTING ONLY*** It is designed to take in override functions for both the print and input functions. Then run the play method"""

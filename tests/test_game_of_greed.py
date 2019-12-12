@@ -46,29 +46,36 @@ def run_io(game, prints, prompts, response):
 ## Test Scores ##
 #################
 
-def test_zilch(game):
-  assert 0 == game.calculate_score(())
-  assert 0 == game.calculate_score((2,3))
-  assert 0 == game.calculate_score((2,3,4,6))
-  assert 0 == game.calculate_score([2,2,3,3,4,6])
+@pytest.mark.parametrize("roll, expected",[
+  ([], 0),
+  ([2,3], 0),
+  ([2,2,3,3,4,6], 0)
+])
+def test_zilch(game, roll, expected):
+  assert expected == game.calculate_score(roll)
 
-def test_ones(game):
-  assert 100 == game.calculate_score((1,))
-  assert 200 == game.calculate_score([1,1])
-  assert 200 == game.calculate_score([1,2,1,2,3,6])
-  assert 1000 == game.calculate_score([1,1,1,2,4,6])
-  assert 2000 == game.calculate_score([1,1,1,1,4,6])
-  assert 3000 == game.calculate_score([1,1,1,1,1,6])
-  assert 4000 == game.calculate_score([1,1,1,1,1,1])
 
-def test_twos(game):
-  assert 0 == game.calculate_score((2,))
-  assert 0 == game.calculate_score([2,2])
-  assert 200 == game.calculate_score([2,2,2])
-  assert 300 == game.calculate_score([2,1,2,2,4,6])
-  assert 400 == game.calculate_score([2,2,2,2,4,6])
-  assert 600 == game.calculate_score([2,2,2,2,2])
-  assert 800 == game.calculate_score((2,2,2,2,2,2))
+@pytest.mark.parametrize("roll, expected",[
+  ([1], 100),
+  ([1,1], 200),
+  ([1,1,1], 1000),
+  ([1,1,1,1], 2000),
+  ([1,1,1,1,1], 3000),
+  ([1,1,1,1,1,1], 4000)
+])
+def test_ones(game, roll, expected):
+  assert expected == game.calculate_score(roll)
+
+@pytest.mark.parametrize("roll, expected",[
+  ([2], 0),
+  ([2,2], 0),
+  ([2,2,2], 200),
+  ([2,2,2,2], 400),
+  ([2,2,2,2,2], 600),
+  ([2,2,2,2,2,2], 800),
+  ])
+def test_twos(game, roll, expected):
+  assert expected == game.calculate_score(roll)
 
 
 def test_threes(game):
