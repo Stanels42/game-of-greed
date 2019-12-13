@@ -50,6 +50,7 @@ def bot():
   ([6,6,6,1,1,2], '66611'),
   ([5,5,1,1], '5511'),
   ([5,6], '5'),
+  ([2,2,2,3,4,6], ''),
 ])
 def test_bot_move(bot, roll, output):
   assert output == bot.selected_dice(roll)

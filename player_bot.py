@@ -5,7 +5,7 @@ from collections import Counter
 class Player_Bot:
   """A bot program that can be used in place of a play in the place of a player"""
   def __init__(self):
-    self.name = "Definitely Doen't Cheat"
+    self.name = "Geronimo"
     self.last_roll = []
     self.dice_remain = 6
     self.current_bank = 0
@@ -97,8 +97,6 @@ class Player_Bot:
     """Decide if the bot should try to roll again"""
 
     if self.dice_remain == 0:
-      self.dice_remain = 6
-    if self.dice_remain == 6:
       return 'y'
     elif self.current_bank >= 2000:
       return 'n'
@@ -126,6 +124,12 @@ if __name__ == "__main__":
     high_score = round_score if round_score > high_score else high_score
     low_score = round_score if round_score < low_score else low_score
 
+  print('')
+  print('')
+  print('')
   print('Average Score: ' + str(total_score/games))
   print('Highest Score: ' + str(high_score))
   print('Lowest Score:  ' + str(low_score))
+  print('')
+  print('')
+  print('')
