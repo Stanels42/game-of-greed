@@ -29,7 +29,6 @@ class Game:
     self._print('Welcome to Game of Greed')
     player_input = self._input("Wanna play?")
     if player_input.lower() in self._valid_yes:
-      self._print('Great! Check back tomorrow :D')
       turns = 0
       while turns < 10:
         self._print('Player 1 it\'s your turn!')
@@ -53,7 +52,7 @@ class Game:
 
       # Break from the loop and end the turn
       if roll_score == 0:
-        self._print('Roll 0 end Turn')
+        self._print('Zilch, Your Turn Is Over')
         bank = 0
         end_turn = True
         continue
@@ -66,19 +65,16 @@ class Game:
 
       valid_save=False
       while not valid_save:
-        self._print('Your Roll Was: ' + str(roll))
+        self._print('You Rolled: ' + str(roll))
         self._print('Your Current Bank is: ' + str(bank))
         response = input('Enter dice to keep: ')
-        if re.match(r"[1-6]{1,6}", response):
-          saved = re.findall(r"[1-6]", response)
-          for i in range(len(saved)):
-            saved[i] = int(saved[i])
+
+        if re.search(r"[1-6]{1,6}", response):
+
+          saved = tuple( int(num) for num in re.findall(r"[1-6]", response) )
           count = Counter(saved)
           count_list = list(count.elements())
           bad_entry = False
-          for key in count.keys():
-            if not key == 1 and not key == 5 and not count[key] > 2:
-              bad_entry = True
           if bad_entry:
             self._print("Bad Save Values")
             continue
@@ -140,9 +136,13 @@ class Game:
       self._input = input_func
     self.play()
 
+  def testing_flow(self):
+    """***TESTING ONLY***"""
+    pass
+
 
 if __name__ == "__main__":
 
     game = Game()
 
-    print(game.turn())
+    game.play()
