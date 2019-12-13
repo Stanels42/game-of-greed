@@ -14,14 +14,6 @@ from game_of_greed import Game
 ## Test Game Start ##
 #####################
 
-def test_start_game(game):
-  prints = ["Welcome to Game of Greed", 'Great! Check back tomorrow :D']
-  prompts = ["Wanna play?"]
-  response = ['Yes']
-
-  run_io(game, prints, prompts, response)
-
-
 def test_dont_start(game):
   prints = ["Welcome to Game of Greed", 'OK. Maybe another time']
   prompts = ["Wanna play?"]

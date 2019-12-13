@@ -4,6 +4,8 @@
 **Author**: Chris Stanley
 **Version**: 1.0.0
 
+### [Bot Docs](player_bot.py)
+
 ## Overview
 The goal of this application is to recreate the dice game known as *The Game of Greed* in the terminal using python.
 
